@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { PokemonNames } from "../api";
+import * as style from "./PokemonTypes.css";
 
 type Props = {
   pokemonTypes: string[];
@@ -9,10 +10,13 @@ type Props = {
 };
 
 export const PokemonTypes = (props: Props) => (
-  <div>
+  <div className={style.root}>
     <h1>Pokémon Types</h1>
     <form>
-      <fieldset disabled={props.pokemonNames === "pending"}>
+      <fieldset
+        className={style.fieldset}
+        disabled={props.pokemonNames === "pending"}
+      >
         {props.pokemonTypes.map((pt) => (
           <Fragment key={pt}>
             <input

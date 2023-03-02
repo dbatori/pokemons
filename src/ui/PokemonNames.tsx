@@ -3,6 +3,7 @@ import { PokemonNames as Names } from "../api";
 import { ErrorMsg } from "./ErrorMsg";
 import { Spinner } from "./Spinner";
 import { ProfileCard } from "./ProfileCard";
+import * as style from "./PokemonNames.css";
 
 type Props = {
   pokemonNames: Names;
@@ -14,19 +15,26 @@ export const PokemonNames = (props: Props) => {
   const [filterCatched, setFilterCatched] = useState(false);
 
   return (
-    <div>
+    <main className={style.root}>
       <h1>Pokémon Names</h1>
-      <form>
-        <fieldset disabled={isDisabled(props)}>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <fieldset className={style.fieldset} disabled={isDisabled(props)}>
           <input
+            type="search"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Search Pokémon..."
           />
-          <input
-            type="checkbox"
-            checked={filterCatched}
-            onChange={() => setFilterCatched((fc) => !fc)}
-          />
+          <div className={style.catchedFilter}>
+            <div>Filter catched</div>
+            <input
+              type="checkbox"
+              id="catched-filter"
+              checked={filterCatched}
+              onChange={() => setFilterCatched((fc) => !fc)}
+            />
+            <label htmlFor="catched-filter" />
+          </div>
         </fieldset>
       </form>
       <List
@@ -35,7 +43,7 @@ export const PokemonNames = (props: Props) => {
         searchText={searchText}
         filterCatched={filterCatched}
       />
-    </div>
+    </main>
   );
 };
 
@@ -56,10 +64,12 @@ const List = (props: ListProps) => {
   const [catched, setCatched] = useState(new Set<string>());
   const { selectedType, pokemonNames, searchText, filterCatched } = props;
 
-  if (selectedType === undefined) return <p>Please select a Pokémon type!</p>;
+  if (selectedType === undefined)
+    return <p className={style.info}>Please select a Pokémon type!</p>;
   if (pokemonNames === "pending") return <Spinner />;
   if (pokemonNames === "error") return <ErrorMsg />;
-  if (pokemonNames.length === 0) return <p>No Pokémon of this type!</p>;
+  if (pokemonNames.length === 0)
+    return <p className={style.info}>No Pokémon of this type!</p>;
 
   const filtered = filterNames(
     pokemonNames,
@@ -67,19 +77,21 @@ const List = (props: ListProps) => {
     filterCatched,
     catched
   );
-  if (filtered.length === 0) return <p>No match!</p>;
+  if (filtered.length === 0) return <p className={style.info}>No match!</p>;
 
   return (
     <>
-      {filtered.map((pn) => (
-        <button
-          key={pn}
-          style={{ backgroundColor: catched.has(pn) ? "green" : "transparent" }}
-          onClick={() => setSelectedName(pn)}
-        >
-          {pn}
-        </button>
-      ))}
+      <div className={style.list}>
+        {filtered.map((pn) => (
+          <button
+            className={catched.has(pn) ? style.catchedButton : style.nameButton}
+            key={pn}
+            onClick={() => setSelectedName(pn)}
+          >
+            {pn}
+          </button>
+        ))}
+      </div>
       {selectedName !== undefined && (
         <ProfileCard
           name={selectedName}

@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Pokemon, usePokemon } from "../api";
 import { ErrorMsg } from "./ErrorMsg";
 import { Spinner } from "./Spinner";
+import * as style from "./ProfileCard.css";
 
 type Props = {
   name: string;
@@ -30,12 +31,16 @@ export const ProfileCard = (props: Props) => {
   };
 
   return (
-    <div>
-      <button onClick={props.onClose}>(X)</button>
-      <Details pokemon={pokemon} />
-      <button onClick={onCatch}>
-        {props.catched.has(props.name) ? "release" : "catch"}
-      </button>
+    <div className={style.overlay}>
+      <div className={style.card}>
+        <button className={style.closeButton} onClick={props.onClose}>
+          ( x )
+        </button>
+        <Details pokemon={pokemon} />
+        <button className={style.catchButton} onClick={onCatch}>
+          {props.catched.has(props.name) ? "release" : "catch"}
+        </button>
+      </div>
     </div>
   );
 };
@@ -51,24 +56,18 @@ const Details = (props: DetailsProps) => {
   if (pokemon === "error") return <ErrorMsg />;
   return (
     <>
-      <figure>
-        <img src={pokemon.picture} alt={`Artwork of ${pokemon.name}`} />
-        <figcaption>{pokemon.name}</figcaption>
+      <figure className={style.figure}>
+        <img
+          className={style.img}
+          src={pokemon.picture}
+          alt={`Artwork of ${pokemon.name}`}
+        />
+        <figcaption className={style.figcaption}>{pokemon.name}</figcaption>
       </figure>
       <div>
-        <span>Weight</span>
-        {pokemon.weight}
+        weight: {pokemon.weight} &bull; height: {pokemon.height}
       </div>
-      <div>
-        <span>Height</span>
-        {pokemon.height}
-      </div>
-      <h2>Not Hidden Abilities</h2>
-      <div>
-        {pokemon.notHiddenAbilities.map((a) => (
-          <span key={a}>{a}</span>
-        ))}
-      </div>
+      <div>not hidden abilities: {pokemon.notHiddenAbilities.join(", ")}</div>
     </>
   );
 };

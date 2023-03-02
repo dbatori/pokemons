@@ -1,5 +1,3 @@
-// TODO remove sleep and fake error
-
 const url = "https://pokeapi.co/api/v2";
 
 export type FetchState = "pending" | "error";
@@ -26,8 +24,8 @@ export function fetchPokemon(name: string): Promise<Pokemon> {
 
 async function get<T>(path: string, extract: (data: any) => T): Promise<T> {
   try {
-    await new Promise((r) => setTimeout(r, 500));
-    if (Math.random() < 0.25) throw new Error();
+    //await new Promise((r) => setTimeout(r, 300));
+    //if (Math.random() < 0.25) throw new Error();
     const response = await fetch(`${url}/${path}`);
     if (!response.ok) throw new Error("Network response was not OK");
     return extract(await response.json());
